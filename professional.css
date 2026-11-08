@@ -21,3 +21,6 @@ body{line-height:1.65}p{max-width:68ch}.wrap{max-width:1280px}.header{height:88p
 
 /* Readable body contrast and predictable keyboard/anchor scrolling. */
 html{scroll-behavior:auto}.section-copy p,.contact-intro,.project-caption p{color:var(--ink)}
+
+/* A fine outer sleeve rim matches the physical ID holder. */
+.id-badge:before{content:"";position:absolute;inset:-6px;border:1px solid var(--badge-edge-dark);border-radius:22px;opacity:.7;pointer-events:none}

@@ -2,8 +2,12 @@ const fs=require('fs'),vm=require('vm'),assert=require('assert/strict'),path=req
 const site=path.resolve(__dirname,'..');
 const {BadgePhysics}=require('../badge.js');
 function assertBounds(m){const sin=Math.sin(m.angle),cos=Math.cos(m.angle);for(const[x,y]of [[-m.cardWidth/2,28],[m.cardWidth/2,28],[-m.cardWidth/2,m.cardHeight+28],[m.cardWidth/2,m.cardHeight+28],[-18,-78],[18,-78]]){const px=m.x+x*cos-y*sin,py=m.y+x*sin+y*cos;assert(px>=11.99&&px<=m.width-11.99,`Horizontal overflow ${px}/${m.width}`);assert(py>=39.99&&py<=m.height-63.99,`Vertical overflow ${py}/${m.height}`)}for(const key of ['x','y','vx','vy','angle'])assert(Number.isFinite(m[key]),key)}
-for(const[w,h,cw,ch]of [[460,800,260,385],[340,760,240,385],[272,760,216,385],[720,800,260,385],[272,640,216,385]]){
+for(const[w,h,cw,ch]of [[460,800,260,385],[460,700,250,385],[340,640,250,385],[340,760,240,385],[272,760,216,385],[720,800,260,385],[272,640,216,385]]){
  const m=new BadgePhysics(w,h,cw,ch);assertBounds(m);
+ for(const[dx,dy]of [[-40,0],[40,0],[0,-40],[0,40]]){
+  m.reset();const startX=m.x,startY=m.y;m.drag(startX+dx,startY+dy,1/60);assertBounds(m);
+  assert(dx?Math.sign(dx)*(m.x-startX)>4:Math.sign(dy)*(m.y-startY)>4,'Room to pull in every direction');
+ }
  for(const[x,y]of [[-300,-200],[900,1000],[w*.8,150],[w*.2,100]]){m.drag(x,y,1/60);m.angle=m.maxAngle; m.constrain();assertBounds(m);let settled=false;for(let i=0;i<1800;i++){const active=m.step(1/60);assertBounds(m);if(!active){settled=true;break}}assert(settled,'Badge must settle');assert(Math.abs(m.x-m.anchor.x)<.4)}
  m.resize(w,h,cw,ch);assert.equal(m.vx,0);assert.equal(m.angle,0);
 }

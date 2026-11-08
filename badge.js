@@ -11,7 +11,11 @@
       this.cardWidth = cardWidth; this.cardHeight = cardHeight;
       this.anchor = { x: width / 2, y: 24 };
       this.gravity = 900; this.stiffness = 150;
-      this.length = Math.min(240, Math.max(45, height - cardHeight - 28 - 24 - 76));
+      // Rest higher, with usable travel above and below the ID on every screen.
+      const topRest = 40 + 78;
+      const bottomRest = height - cardHeight - 28 - 64;
+      const restY = topRest + Math.max(0, bottomRest - topRest) * 0.4;
+      this.length = Math.max(45, restY - this.anchor.y - this.gravity / this.stiffness);
       this.maxAngle = Math.min(0.38, Math.atan2(Math.max(0, width - cardWidth - 32), cardHeight + 28));
       this.reset();
     }
@@ -86,14 +90,14 @@
     const slack = Math.max(0, model.length - Math.hypot(dx, dy));
     const bend = clamp(-model.vx * 0.025, -18, 18);
     const bounce = clamp(model.vy * 0.035, -14, 14);
-    // Two broad, fixed upper ends form the V shown in the reference.
+    // Broad, gently sagging straps meet at the clip, as in the reference.
     // The ends start outside the clipped stage, so no pin or round cap is visible.
     const inset = 20;
     const leftAnchor = inset;
     const rightAnchor = model.width - inset;
     const topY = -12;
     const joinY = model.y - 74;
-    const controlY = (topY + joinY) * 0.5 + slack * 0.14 + bounce;
+    const controlY = joinY + 12 + slack * 0.25 + bounce;
     const leftControlX = (leftAnchor + model.x - 5) * 0.5 + bend;
     const rightControlX = (rightAnchor + model.x + 5) * 0.5 + bend;
     const left = `M${leftAnchor} ${topY} Q${leftControlX} ${controlY} ${model.x - 5} ${joinY}`;
@@ -151,7 +155,11 @@
     if (!dragging || event.pointerId !== dragging.id) return;
     const now = performance.now(), bounds = stage.getBoundingClientRect();
     model.drag(event.clientX - bounds.left - dragging.dx, event.clientY - bounds.top - dragging.dy, (now - dragging.time) / 1000);
-    if (!reducedMotion.matches) model.angle = clamp(model.vx * 0.00022, -model.maxAngle, model.maxAngle);
+    if (!reducedMotion.matches) {
+      // A small drag tilt leaves room to pull toward either side of the stage.
+      const dragAngle = Math.min(0.12, model.maxAngle);
+      model.angle = clamp(model.vx * 0.00009, -dragAngle, dragAngle);
+    }
     model.constrain();
     dragging.time = now;
     render();
