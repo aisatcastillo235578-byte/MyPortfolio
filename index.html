@@ -9,6 +9,7 @@
   <script>try { const saved = localStorage.getItem('theme'); document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light'; } catch (_) {}</script>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
+  <script src="badge.js" defer></script>
 </head>
 <body>
   <div class="hover-grid" id="hover-grid" aria-hidden="true"></div>
@@ -21,7 +22,18 @@
   <main id="main">
     <section class="hero wrap" id="home" aria-labelledby="home-title">
       <div class="hero-copy"><p class="eyebrow">WEB DEVELOPMENT & DIGITAL DESIGN</p><h1 id="home-title">Melven<br>Castillo<span>.</span></h1><p class="hero-description">Building clear, practical digital experiences with thoughtful design and purposeful code.</p><p class="hero-context">A portfolio of my skills, education, and sample interface concepts.</p><div class="hero-actions"><a class="button" href="#projects">Explore projects <span aria-hidden="true">↗</span></a><a class="button button-outline" href="#contact">Contact me</a></div><a class="hero-link" href="https://www.linkedin.com/in/melven-castillo-4822b6424/" target="_blank" rel="noopener noreferrer">View LinkedIn profile <span aria-hidden="true">↗</span></a></div>
-      <figure class="portrait-frame"><img src="assets/professional-portrait.png" width="1122" height="1402" alt="Formal portrait of Melven Castillo wearing a black suit, white shirt, and tie" fetchpriority="high" decoding="async"><figcaption><strong>Melven Castillo</strong><span>Professional portfolio</span></figcaption></figure>
+      <div class="badge-scene" id="badge-scene" aria-label="Interactive profile badge">
+        <span class="badge-anchor" aria-hidden="true"></span>
+        <svg class="badge-lanyard" id="badge-lanyard" viewBox="0 0 410 600" preserveAspectRatio="none" aria-hidden="true"><path class="lanyard-edge" id="lanyard-edge" d="M205 24 Q205 90 205 136"/><path class="lanyard-fabric" id="lanyard-fabric" d="M205 24 Q205 90 205 136"/><path class="lanyard-stitch" id="lanyard-stitch" d="M205 24 Q205 90 205 136"/></svg>
+        <div class="id-badge" id="id-badge" tabindex="0" role="group" aria-label="Melven Castillo profile ID badge" aria-describedby="badge-hint">
+          <span class="badge-clip" aria-hidden="true"><span></span></span>
+          <div class="badge-surface"><div class="badge-header"><span>c_melvs.dev</span><span class="badge-mark" aria-hidden="true">MC</span></div>
+          <div class="badge-photo"><img src="assets/professional-portrait.png" width="1122" height="1402" alt="Melven Castillo wearing a black suit, white shirt, and tie" fetchpriority="high" decoding="async" draggable="false"></div>
+          <div class="badge-details"><h2>Melven Castillo</h2><p>Web Development<br>& Digital Design</p></div>
+          <div class="badge-footer"><span>PROFESSIONAL PROFILE</span><span class="badge-barcode" aria-hidden="true"></span></div></div>
+        </div>
+        <p class="badge-hint" id="badge-hint"><span aria-hidden="true">↔</span> Drag the card · Arrow keys to move · Home to reset</p>
+      </div>
     </section>
     <section class="section section-tint" id="about" aria-labelledby="about-title"><div class="wrap split"><div><p class="eyebrow">01 / PROFILE</p><h2 id="about-title">About me</h2></div><div class="section-copy"><p class="lead">I am interested in creating websites and digital content that are clear, useful, and easy to navigate.</p><p>My toolkit includes HTML, CSS, JavaScript, PHP, and MySQL for web development, alongside Canva and CapCut for visual content and video editing.</p><p>This portfolio brings together my technical skills and sample interface concepts. I welcome conversations about job opportunities and client projects.</p><a class="text-link" href="#contact">Discuss an opportunity <span aria-hidden="true">↗</span></a></div></div></section>
     <section class="section wrap" id="tech" aria-labelledby="skills-title"><div class="section-heading"><div><p class="eyebrow">02 / CAPABILITIES</p><h2 id="skills-title">Skills & tools</h2></div><p>Web development, visual content,<br>and video editing.</p></div><ul class="skills-grid"><li class="skill"><div><span class="skill-logo"><img src="assets/skills/html.svg" alt="" width="48" height="48" loading="lazy" decoding="async"></span><h3>HTML</h3></div><p class="skill-level" data-skill="HTML">3/5 · Self-assessed</p><div class="skill-meter" aria-hidden="true"><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span class="filled"></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></li>
