@@ -51,13 +51,14 @@
         const nx = dx / distance, ny = dy / distance;
         const radialSpeed = this.vx * nx + this.vy * ny;
         // A fabric strap carries tension, but goes slack when pushed toward its anchor.
-        const tension = Math.max(0, this.stiffness * (distance - this.length) + 7 * radialSpeed);
-        const ax = -tension * nx - 2.7 * this.vx;
-        const ay = this.gravity - tension * ny - 2.7 * this.vy;
+        // Keep the release springy, with enough damping to come to rest.
+        const tension = Math.max(0, this.stiffness * (distance - this.length) + 3.8 * radialSpeed);
+        const ax = -tension * nx - 1.8 * this.vx;
+        const ay = this.gravity - tension * ny - 1.8 * this.vy;
         this.vx += ax * dt; this.vy += ay * dt;
         this.x += this.vx * dt; this.y += this.vy * dt;
         const lever = Math.max(100, this.cardHeight / 2 + 28);
-        const angularAcceleration = -(this.gravity / lever) * Math.sin(this.angle) - 0.18 * (ax / lever) * Math.cos(this.angle) - 5.5 * this.angularVelocity;
+        const angularAcceleration = -(this.gravity / lever) * Math.sin(this.angle) - 0.18 * (ax / lever) * Math.cos(this.angle) - 3.6 * this.angularVelocity;
         this.angularVelocity += angularAcceleration * dt;
         this.angle += this.angularVelocity * dt;
         if (Math.abs(this.angle) > this.maxAngle) this.angularVelocity *= -0.1;
@@ -84,6 +85,7 @@
     const dx = model.x - model.anchor.x, dy = model.y - model.anchor.y;
     const slack = Math.max(0, model.length - Math.hypot(dx, dy));
     const bend = clamp(-model.vx * 0.025, -18, 18);
+    const bounce = clamp(model.vy * 0.035, -14, 14);
     // Two broad, fixed upper ends form the V shown in the reference.
     // The ends start outside the clipped stage, so no pin or round cap is visible.
     const inset = 20;
@@ -91,7 +93,7 @@
     const rightAnchor = model.width - inset;
     const topY = -12;
     const joinY = model.y - 74;
-    const controlY = (topY + joinY) * 0.5 + slack * 0.14;
+    const controlY = (topY + joinY) * 0.5 + slack * 0.14 + bounce;
     const leftControlX = (leftAnchor + model.x - 5) * 0.5 + bend;
     const rightControlX = (rightAnchor + model.x + 5) * 0.5 + bend;
     const left = `M${leftAnchor} ${topY} Q${leftControlX} ${controlY} ${model.x - 5} ${joinY}`;

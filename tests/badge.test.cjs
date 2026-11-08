@@ -8,6 +8,15 @@ for(const[w,h,cw,ch]of [[460,800,260,385],[340,760,240,385],[272,760,216,385],[7
  m.resize(w,h,cw,ch);assert.equal(m.vx,0);assert.equal(m.angle,0);
 }
 console.log('PASS physics: extreme drags remain inside desktop/tablet/mobile hero bounds, gravity and damping settle, resize resets safely.');
+// A vertical release should visibly rebound more than once, then lose energy.
+{
+ const m=new BadgePhysics(460,800,250,385),rest=m.y;
+ m.y+=30;m.constrain();let previous=m.y-rest,crossings=0,latePeak=0;
+ for(let i=0;i<360;i++){m.step(1/60);assertBounds(m);const offset=m.y-rest;if(offset*previous<0&&Math.abs(previous)>.01)crossings++;previous=offset;if(i>300)latePeak=Math.max(latePeak,Math.abs(offset));}
+ assert(crossings>=3,'Release must produce repeated elastic rebounds');
+ assert(latePeak<1,'Rebounds must damp down rather than continue indefinitely');
+ console.log('PASS bounce: repeated vertical rebounds decay to less than one pixel.');
+}
 function setup(reduced=false){
  const callbacks={},windowEvents={},docEvents={},frames=new Map();let now=1000,frameID=0;
  function element(){return {style:{},attrs:{},classList:{add:k=>callbacks['class:'+k]=true,remove:k=>delete callbacks['class:'+k]},setAttribute(k,v){this.attrs[k]=v},addEventListener(k,f){this.events[k]=f},events:{},focus(){this.focused=true}}}
