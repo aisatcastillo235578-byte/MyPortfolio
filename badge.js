@@ -11,7 +11,7 @@
       this.cardWidth = cardWidth; this.cardHeight = cardHeight;
       this.anchor = { x: width / 2, y: 24 };
       this.gravity = 900; this.stiffness = 150;
-      this.length = Math.min(128, Math.max(45, height - cardHeight - 28 - 24 - 76));
+      this.length = Math.min(240, Math.max(45, height - cardHeight - 28 - 24 - 76));
       this.maxAngle = Math.min(0.38, Math.atan2(Math.max(0, width - cardWidth - 32), cardHeight + 28));
       this.reset();
     }
@@ -23,7 +23,7 @@
     constrain() {
       this.angle = clamp(this.angle, -this.maxAngle, this.maxAngle);
       const sin = Math.sin(this.angle), cos = Math.cos(this.angle);
-      const corners = [[-this.cardWidth / 2, 28], [this.cardWidth / 2, 28], [-this.cardWidth / 2, this.cardHeight + 28], [this.cardWidth / 2, this.cardHeight + 28], [-15, -8], [15, -8]];
+      const corners = [[-this.cardWidth / 2, 28], [this.cardWidth / 2, 28], [-this.cardWidth / 2, this.cardHeight + 28], [this.cardWidth / 2, this.cardHeight + 28], [-18, -78], [18, -78]];
       const xs = corners.map(([x, y]) => x * cos - y * sin);
       const ys = corners.map(([x, y]) => x * sin + y * cos);
       const minX = 12 - Math.min(...xs), maxX = this.width - 12 - Math.max(...xs);
@@ -71,7 +71,12 @@
   const card = document.querySelector('#id-badge');
   if (!stage || !card) return;
   const rope = document.querySelector('#badge-lanyard');
-  const paths = ['#lanyard-edge', '#lanyard-fabric', '#lanyard-stitch'].map(selector => document.querySelector(selector));
+  const selectPaths = ids => ids.map(id => document.querySelector('#' + id));
+  const paths = selectPaths(['lanyard-edge', 'lanyard-fabric', 'lanyard-stitch']);
+  const rightPaths = selectPaths(['lanyard-right-edge', 'lanyard-right-fabric', 'lanyard-right-stitch']);
+  const loopPaths = selectPaths(['lanyard-loop-edge', 'lanyard-loop-fabric', 'lanyard-loop-stitch']);
+  const tailPaths = selectPaths(['lanyard-tail-edge', 'lanyard-tail-fabric', 'lanyard-tail-stitch']);
+  const buckle = document.querySelector('#lanyard-buckle');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let model, frame = 0, previousTime = 0, dragging = null;
   function render() {
@@ -80,10 +85,20 @@
     const dx = model.x - model.anchor.x, dy = model.y - model.anchor.y;
     const slack = Math.max(0, model.length - Math.hypot(dx, dy));
     const bend = clamp(-model.vx * 0.025, -18, 18);
-    const controlX = model.anchor.x + dx * 0.3 + bend + slack * 0.2;
-    const controlY = model.anchor.y + dy * 0.6 + slack * 0.5;
-    const d = `M${model.anchor.x} ${model.anchor.y} Q${controlX} ${controlY} ${model.x} ${model.y}`;
-    paths.forEach(path => path.setAttribute('d', d));
+    const shoulder = Math.min(42, model.width * 0.13);
+    const joinY = model.y - 74;
+    const controlY = 38 + (joinY - 38) * 0.53 + slack * 0.14;
+    const leftControlX = model.anchor.x - shoulder * 0.72 + dx * 0.28 + bend;
+    const rightControlX = model.anchor.x + shoulder * 0.72 + dx * 0.28 + bend;
+    const left = `M${model.anchor.x - shoulder} 38 Q${leftControlX} ${controlY} ${model.x - 5} ${joinY}`;
+    const right = `M${model.x + 5} ${joinY} Q${rightControlX} ${controlY} ${model.anchor.x + shoulder} 38`;
+    const loop = `M${model.anchor.x - shoulder} 38 C${model.anchor.x - shoulder} 4 ${model.anchor.x + shoulder} 4 ${model.anchor.x + shoulder} 38`;
+    const tail = `M${model.x} ${model.y - 34} Q${model.x + bend * 0.15} ${model.y - 15} ${model.x} ${model.y}`;
+    paths.forEach(path => path.setAttribute('d', left));
+    rightPaths.forEach(path => path.setAttribute('d', right));
+    loopPaths.forEach(path => path.setAttribute('d', loop));
+    tailPaths.forEach(path => path.setAttribute('d', tail));
+    buckle.setAttribute('transform', `translate(${model.x} ${model.y - 56})`);
   }
   function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; previousTime = 0; }
   function animate(time) {
