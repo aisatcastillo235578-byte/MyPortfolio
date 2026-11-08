@@ -59,3 +59,11 @@ html.badge-active{overflow-x:clip}
 #lanyard-icon-php,#lanyard-icon-mysql{filter:grayscale(1) brightness(.28)}
 #lanyard-stripe-lower path{stroke:#e7eeeb}
 .badge-lanyard .lanyard-tail-label{font-size:8px;font-weight:850;letter-spacing:.5px}
+
+/* Motion uses opacity and short transforms; the badge owns its own physics. */
+.hero-copy{animation:none}
+body{transition:background-color .24s ease,color .24s ease}
+.header,.section-tint,.skill,.education-card,#contact-form,input,textarea{transition:background-color .24s ease,border-color .24s ease,color .24s ease}
+h1,h2,h3,.hero-role,.hero-context,.eyebrow,.section-copy p,.section-note{transition:color .24s ease}
+.project{transition:transform .25s cubic-bezier(.22,1,.36,1),border-color .24s ease,box-shadow .25s ease,background-color .24s ease,color .24s ease}
+.button{transition:transform .2s cubic-bezier(.22,1,.36,1),background-color .2s ease,border-color .2s ease,color .2s ease}
