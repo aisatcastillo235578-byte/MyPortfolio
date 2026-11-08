@@ -20,12 +20,15 @@
       this.reset();
     }
     reset() {
+      this.freeMotion = false;
       this.x = this.anchor.x; this.y = this.anchor.y + this.length + this.gravity / this.stiffness;
       this.vx = 0; this.vy = 0; this.angle = 0; this.angularVelocity = 0;
       this.constrain();
     }
     constrain() {
       this.angle = clamp(this.angle, -this.maxAngle, this.maxAngle);
+      // During a pull and its rebound, the card can leave the hero stage.
+      if (this.freeMotion) return;
       const sin = Math.sin(this.angle), cos = Math.cos(this.angle);
       const corners = [[-this.cardWidth / 2, 28], [this.cardWidth / 2, 28], [-this.cardWidth / 2, this.cardHeight + 28], [this.cardWidth / 2, this.cardHeight + 28], [-18, -78], [18, -78]];
       const xs = corners.map(([x, y]) => x * cos - y * sin);
@@ -57,8 +60,9 @@
         // A fabric strap carries tension, but goes slack when pushed toward its anchor.
         // Keep the release springy, with enough damping to come to rest.
         const tension = Math.max(0, this.stiffness * (distance - this.length) + 3.8 * radialSpeed);
-        const ax = -tension * nx - 1.8 * this.vx;
-        const ay = this.gravity - tension * ny - 1.8 * this.vy;
+        const pull = this.freeMotion ? Math.min(tension, 9000) : tension;
+        const ax = -pull * nx - 1.8 * this.vx;
+        const ay = this.gravity - pull * ny - 1.8 * this.vy;
         this.vx += ax * dt; this.vy += ay * dt;
         this.x += this.vx * dt; this.y += this.vy * dt;
         const lever = Math.max(100, this.cardHeight / 2 + 28);
@@ -83,6 +87,17 @@
   const buckle = document.querySelector('#lanyard-buckle');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   let model, frame = 0, previousTime = 0, dragging = null;
+  function enableFreeMotion() {
+    model.freeMotion = true;
+    stage.classList.add('is-free');
+    document.documentElement.classList.add('badge-active');
+  }
+  function resetBadge() {
+    model.reset();
+    stage.classList.remove('is-free');
+    document.documentElement.classList.remove('badge-active');
+    render();
+  }
   function render() {
     card.style.left = '0'; card.style.top = '0';
     card.style.transform = `translate3d(${model.x - model.cardWidth / 2}px,${model.y + 28}px,0) rotate(${model.angle}rad)`;
@@ -117,7 +132,7 @@
     const moving = model.step(dt);
     render();
     if (moving) frame = requestAnimationFrame(animate);
-    else { model.reset(); render(); previousTime = 0; }
+    else { resetBadge(); previousTime = 0; }
   }
   function start() { if (!frame && !dragging && !reducedMotion.matches && !document.hidden) frame = requestAnimationFrame(animate); }
   function endDrag(event, cancelled = false) {
@@ -127,7 +142,7 @@
     dragging = null;
     card.classList.remove('is-dragging');
     if (card.hasPointerCapture(id)) card.releasePointerCapture(id);
-    if (reducedMotion.matches) { model.reset(); render(); } else start();
+    if (reducedMotion.matches) resetBadge(); else start();
   }
   function resize() {
     stop();
@@ -138,12 +153,13 @@
     if (model) model.resize(width, height, card.offsetWidth, card.offsetHeight);
     else model = new BadgePhysics(width, height, card.offsetWidth, card.offsetHeight);
     rope.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    render();
+    resetBadge();
   }
   card.addEventListener('pointerdown', event => {
     if (!model || dragging || !event.isPrimary || event.button !== 0) return;
     const bounds = stage.getBoundingClientRect();
     stop();
+    enableFreeMotion();
     dragging = { id: event.pointerId, dx: event.clientX - bounds.left - model.x, dy: event.clientY - bounds.top - model.y, time: performance.now() };
     model.vx = 0; model.vy = 0;
     card.classList.add('is-dragging');
@@ -171,8 +187,9 @@
   card.addEventListener('keydown', event => {
     if (!model || dragging || !['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'Escape'].includes(event.key)) return;
     event.preventDefault(); stop();
-    if (event.key === 'Home' || event.key === 'Escape') model.reset();
+    if (event.key === 'Home' || event.key === 'Escape') resetBadge();
     else {
+      enableFreeMotion();
       if (event.key === 'ArrowLeft') model.x -= 18;
       if (event.key === 'ArrowRight') model.x += 18;
       if (event.key === 'ArrowUp') model.y -= 18;
@@ -182,11 +199,11 @@
     render();
     start();
   });
-  window.addEventListener('blur', () => { endDrag(null, true); stop(); if (model) { model.reset(); render(); } });
+  window.addEventListener('blur', () => { endDrag(null, true); stop(); if (model) resetBadge(); });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { endDrag(null, true); stop(); if (model) { model.reset(); render(); } }
+    if (document.hidden) { endDrag(null, true); stop(); if (model) resetBadge(); }
   });
-  reducedMotion.addEventListener('change', () => { endDrag(null, true); stop(); if (model) { model.reset(); render(); } });
+  reducedMotion.addEventListener('change', () => { endDrag(null, true); stop(); if (model) resetBadge(); });
   if (typeof ResizeObserver !== 'undefined') new ResizeObserver(resize).observe(stage);
   else window.addEventListener('resize', resize);
   resize();

@@ -12,6 +12,13 @@ for(const[w,h,cw,ch]of [[460,800,260,385],[460,700,250,385],[340,640,250,385],[3
  m.resize(w,h,cw,ch);assert.equal(m.vx,0);assert.equal(m.angle,0);
 }
 console.log('PASS physics: extreme drags remain inside desktop/tablet/mobile hero bounds, gravity and damping settle, resize resets safely.');
+for(const[x,y]of [[-700,-300],[1100,900],[170,-400],[170,1300]]){
+ const m=new BadgePhysics(340,640,250,385);m.freeMotion=true;m.drag(x,y,1/60);
+ assert.equal(m.x,x,'Free drag follows the pointer beyond hero sides');assert.equal(m.y,y,'Free drag follows the pointer above/below hero');
+ let settled=false;for(let i=0;i<1800;i++){const active=m.step(1/60);for(const key of ['x','y','vx','vy','angle'])assert(Number.isFinite(m[key]));if(!active){settled=true;break;}}
+ assert(settled,'A pull outside the hero must still settle');m.reset();assertBounds(m);assert.equal(m.freeMotion,false);
+}
+console.log('PASS free drag: unrestricted positions rebound and settle back at home.');
 // A vertical release should visibly rebound more than once, then lose energy.
 {
  const m=new BadgePhysics(460,800,250,385),rest=m.y;
@@ -26,17 +33,17 @@ function setup(reduced=false){
  function element(){return {style:{},attrs:{},classList:{add:k=>callbacks['class:'+k]=true,remove:k=>delete callbacks['class:'+k]},setAttribute(k,v){this.attrs[k]=v},addEventListener(k,f){this.events[k]=f},events:{},focus(){this.focused=true}}}
  const stage=element();stage.clientWidth=340;stage.clientHeight=760;stage.getBoundingClientRect=()=>({left:20,top:100});
  const card=element();card.offsetWidth=240;card.offsetHeight=385;card.capture=null;card.setPointerCapture=id=>card.capture=id;card.hasPointerCapture=id=>card.capture===id;card.releasePointerCapture=()=>card.capture=null;
- const rope=element(),paths=[element(),element(),element()];const els={'#badge-scene':stage,'#id-badge':card,'#badge-lanyard':rope,'#lanyard-edge':paths[0],'#lanyard-fabric':paths[1],'#lanyard-stitch':paths[2]};const media={matches:reduced,addEventListener:(_,f)=>callbacks.motion=f};const doc={hidden:false,querySelector:s=>els[s]||(els[s]=element()),addEventListener:(k,f)=>docEvents[k]=f};
+ const rope=element(),paths=[element(),element(),element()];const els={'#badge-scene':stage,'#id-badge':card,'#badge-lanyard':rope,'#lanyard-edge':paths[0],'#lanyard-fabric':paths[1],'#lanyard-stitch':paths[2]};const media={matches:reduced,addEventListener:(_,f)=>callbacks.motion=f};const doc={hidden:false,documentElement:element(),querySelector:s=>els[s]||(els[s]=element()),addEventListener:(k,f)=>docEvents[k]=f};
  vm.runInNewContext(fs.readFileSync(path.join(site,'badge.js'),'utf8'),{document:doc,window:{matchMedia:()=>media,addEventListener:(k,f)=>windowEvents[k]=f},performance:{now:()=>now},requestAnimationFrame:f=>{frames.set(++frameID,f);return frameID},cancelAnimationFrame:id=>frames.delete(id),ResizeObserver:class{constructor(f){callbacks.resize=f}observe(){}},Math});
  const event=(x,y,id=1,type='mouse')=>({pointerId:id,pointerType:type,isPrimary:true,button:0,clientX:x,clientY:y,preventDefault(){this.prevented=true}});
  return {card,paths,frames,media,doc,callbacks,windowEvents,docEvents,els,event,tick(ms=16.67){now+=ms;for(const[id,f]of [...frames]){frames.delete(id);f(now)}},advance(ms=16){now+=ms}};
 }
 for(const type of ['mouse','touch']){
  const s=setup();const initial=s.card.style.transform;const upperLeft=s.paths[0].attrs.d.split(' Q')[0];const upperRight=s.els['#lanyard-right-fabric'].attrs.d.split(' ').slice(-2).join(' ');assert.equal(upperLeft,'M20 -12');assert.equal(upperRight,'320 -12');const initialBuckle=s.els['#lanyard-buckle'].attrs.transform;assert.equal(s.frames.size,0,'No idle animation');
- const down=s.event(170,280,1,type);down.target={tagName:'IMG'};s.card.events.pointerdown(down);assert(down.prevented);assert.equal(s.card.capture,1);assert(s.card.focused);
+ const down=s.event(170,280,1,type);down.target={tagName:'IMG'};s.card.events.pointerdown(down);assert(down.prevented);assert.equal(s.card.capture,1);assert(s.card.focused);assert(s.callbacks['class:is-free'],'Dragging lifts card outside hero clipping');assert(s.callbacks['class:badge-active']);
  s.advance();const move=s.event(210,300,1,type);move.target={tagName:'P'};s.card.events.pointermove(move);assert.notEqual(s.card.style.transform,initial,'Dragging photo/text moves entire card');const moved=s.card.style.transform;assert(s.paths[0].attrs.d.includes(' Q'),'Strap bends');assert.equal(s.paths[0].attrs.d.split(' Q')[0],upperLeft,'Upper-left end stays anchored');assert.equal(s.els['#lanyard-right-fabric'].attrs.d.split(' ').slice(-2).join(' '),upperRight,'Upper-right end stays anchored');assert.notEqual(s.els['#lanyard-buckle'].attrs.transform,initialBuckle,'Buckle follows card');assert(s.els['#lanyard-right-fabric'].attrs.d.includes(' Q'),'Second strap bends');assert(s.els['#lanyard-tail-fabric'].attrs.d.includes(' Q'),'Lower connector bends');
  s.card.events.pointermove(s.event(50,100,2,type));assert.equal(s.card.style.transform,moved,'Other pointers ignored');
- s.card.events.pointerup(s.event(210,300,1,type));assert.equal(s.card.capture,null);assert(s.frames.size>0,'Release starts swing');assert.equal(s.card.style.transform,moved,'No jump at release');for(let i=0;i<1800&&s.frames.size;i++)s.tick();assert.equal(s.frames.size,0,'Animation stops after settling');
+ s.card.events.pointerup(s.event(210,300,1,type));assert.equal(s.card.capture,null);assert(s.frames.size>0,'Release starts swing');assert.equal(s.card.style.transform,moved,'No jump at release');for(let i=0;i<1800&&s.frames.size;i++)s.tick();assert.equal(s.frames.size,0,'Animation stops after settling');assert(!s.callbacks['class:is-free']);assert(!s.callbacks['class:badge-active'],'Settling restores normal page overflow');
  s.card.events.pointerdown(s.event(170,280,1,type));s.card.events.pointercancel(s.event(170,280,1,type));assert.equal(s.card.capture,null);s.windowEvents.blur();assert.equal(s.frames.size,0);
 }
 const reduced=setup(true);reduced.card.events.pointerdown(reduced.event(170,280));reduced.advance();reduced.card.events.pointermove(reduced.event(190,300));reduced.card.events.pointerup(reduced.event(190,300));assert.equal(reduced.frames.size,0,'Reduced motion has no release/idle animation');
