@@ -41,3 +41,6 @@ dialog{width:calc(100% - 40px);max-width:620px;max-height:85dvh;overflow:auto;pa
 @media(prefers-reduced-motion:reduce){.id-badge{will-change:auto}}
 
 .lanyard-tail-label{fill:#f5f5f5;font-family:inherit;font-size:6px;font-weight:750;letter-spacing:.4px}.lanyard-buckle rect{fill:#55585c;stroke:#82858a;stroke-width:1}.lanyard-buckle path{fill:#171819;stroke:#414348;stroke-width:1}.lanyard-buckle .buckle-button{fill:#35373a;stroke:#111;stroke-width:.7}
+
+/* Hide the obsolete wall mount if older badge markup is cached. */
+.badge-anchor{display:none!important}
