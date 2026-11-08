@@ -67,3 +67,6 @@ body{transition:background-color .24s ease,color .24s ease}
 h1,h2,h3,.hero-role,.hero-context,.eyebrow,.section-copy p,.section-note{transition:color .24s ease}
 .project{transition:transform .25s cubic-bezier(.22,1,.36,1),border-color .24s ease,box-shadow .25s ease,background-color .24s ease,color .24s ease}
 .button{transition:transform .2s cubic-bezier(.22,1,.36,1),background-color .2s ease,border-color .2s ease,color .2s ease}
+
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;border:0!important}
+#contact-form>button[type="submit"]{margin-top:24px}
