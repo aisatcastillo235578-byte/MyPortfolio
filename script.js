@@ -145,3 +145,40 @@ form.addEventListener('submit', async event => {
 document.querySelectorAll('[data-year]').forEach(element => {
   element.textContent = new Intl.DateTimeFormat('en', { year: 'numeric', timeZone: 'Asia/Manila' }).format(new Date());
 });
+
+// Decorative hover grid: no animation loop, touch input, or reduced-motion tracking.
+const hoverGrid = document.querySelector('#hover-grid');
+const gridPreference = window.matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+let gridFrame = 0;
+let gridX = 0;
+let gridY = 0;
+function hideHoverGrid() {
+  if (gridFrame) cancelAnimationFrame(gridFrame);
+  gridFrame = 0;
+  hoverGrid.classList.remove('is-active');
+}
+function moveHoverGrid(event) {
+  if (event.pointerType !== 'mouse') { hideHoverGrid(); return; }
+  gridX = event.clientX;
+  gridY = event.clientY;
+  if (gridFrame) return;
+  gridFrame = requestAnimationFrame(() => {
+    gridFrame = 0;
+    hoverGrid.style.setProperty('--grid-x', `${gridX}px`);
+    hoverGrid.style.setProperty('--grid-y', `${gridY}px`);
+    hoverGrid.classList.add('is-active');
+  });
+}
+function configureHoverGrid() {
+  hideHoverGrid();
+  document.removeEventListener('pointermove', moveHoverGrid);
+  document.removeEventListener('pointerleave', hideHoverGrid);
+  window.removeEventListener('blur', hideHoverGrid);
+  if (!gridPreference.matches) return;
+  document.addEventListener('pointermove', moveHoverGrid, { passive: true });
+  document.addEventListener('pointerleave', hideHoverGrid);
+  window.addEventListener('blur', hideHoverGrid);
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) hideHoverGrid(); });
+gridPreference.addEventListener('change', configureHoverGrid);
+configureHoverGrid();
