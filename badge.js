@@ -83,6 +83,10 @@
   const selectPaths = ids => ids.map(id => document.querySelector('#' + id));
   const paths = selectPaths(['lanyard-edge', 'lanyard-fabric', 'lanyard-stitch']);
   const rightPaths = selectPaths(['lanyard-right-edge', 'lanyard-right-fabric', 'lanyard-right-stitch']);
+  const printedPanel = document.querySelector('#lanyard-right-panel');
+  const degreeLabel = document.querySelector('#lanyard-degree');
+  const printedIcons = selectPaths(['lanyard-icon-html', 'lanyard-icon-css', 'lanyard-icon-js', 'lanyard-icon-php', 'lanyard-icon-mysql']);
+  const printedStripes = selectPaths(['lanyard-stripe-lower', 'lanyard-stripe-upper']);
   const tailPaths = selectPaths(['lanyard-tail-edge', 'lanyard-tail-fabric', 'lanyard-tail-stitch']);
   const buckle = document.querySelector('#lanyard-buckle');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -121,6 +125,26 @@
     paths.forEach(path => path.setAttribute('d', left));
     rightPaths.forEach(path => path.setAttribute('d', right));
     tailPaths.forEach(path => path.setAttribute('d', tail));
+    // Keep the printed panel, logos and diagonal bands attached to the bending fabric.
+    const point = (a, b, c, t) => ({ x: (1-t)*(1-t)*a.x + 2*(1-t)*t*b.x + t*t*c.x, y: (1-t)*(1-t)*a.y + 2*(1-t)*t*b.y + t*t*c.y });
+    const length = (a, b, c) => {
+      let total = 0, previous = a;
+      for (let i = 1; i <= 24; i++) { const next = point(a,b,c,i/24); total += Math.hypot(next.x-previous.x,next.y-previous.y); previous = next; }
+      return total;
+    };
+    const a = { x:model.x+5, y:joinY }, b = { x:rightControlX, y:controlY }, c = { x:rightAnchor, y:topY };
+    const rightLength = length(a,b,c);
+    printedPanel.setAttribute('d', right);
+    printedPanel.setAttribute('stroke-dasharray', `${rightLength*0.66} ${rightLength}`);
+    printedPanel.setAttribute('stroke-dashoffset', -rightLength*0.18);
+    degreeLabel.setAttribute('textLength', length({x:leftAnchor,y:topY},{x:leftControlX,y:controlY},{x:model.x-5,y:joinY})*0.74);
+    const positionPrint = (node,t) => {
+      const p = point(a,b,c,t);
+      const angle = Math.atan2(2*(1-t)*(b.y-a.y)+2*t*(c.y-b.y),2*(1-t)*(b.x-a.x)+2*t*(c.x-b.x))*180/Math.PI;
+      node.setAttribute('transform', `translate(${p.x} ${p.y}) rotate(${angle})`);
+    };
+    printedIcons.forEach((icon,i) => positionPrint(icon,0.27+i*0.115));
+    printedStripes.forEach((stripe,i) => positionPrint(stripe,i ? 0.84 : 0.18));
     buckle.setAttribute('transform', `translate(${model.x} ${model.y - 56})`);
   }
   function stop() { if (frame) cancelAnimationFrame(frame); frame = 0; previousTime = 0; }

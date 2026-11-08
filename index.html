@@ -15,9 +15,9 @@
   <title>Melven Castillo | Professional Portfolio</title>
   <script>try { const saved = localStorage.getItem('theme'); document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light'; } catch (_) {}</script>
   <link rel="stylesheet" href="style.css?v=black-text-1">
-  <link rel="stylesheet" href="professional.css?v=hero-introduction-1">
+  <link rel="stylesheet" href="professional.css?v=printed-lace-1">
   <script src="script.js?v=professional-review-1" defer></script>
-  <script src="badge.js?v=free-drag-1" defer></script>
+  <script src="badge.js?v=printed-lace-1" defer></script>
 </head>
 <body>
   <div class="hover-grid" id="hover-grid" aria-hidden="true"></div>
@@ -35,10 +35,18 @@
 
           <path class="lanyard-edge" id="lanyard-edge" d="M20 -12 Q110 92 200 196"/><path class="lanyard-fabric" id="lanyard-fabric" d="M20 -12 Q110 92 200 196"/><path class="lanyard-stitch" id="lanyard-stitch" d="M20 -12 Q110 92 200 196"/>
           <path class="lanyard-edge" id="lanyard-right-edge" d="M210 196 Q300 92 390 -12"/><path class="lanyard-fabric" id="lanyard-right-fabric" d="M210 196 Q300 92 390 -12"/><path class="lanyard-stitch" id="lanyard-right-stitch" d="M210 196 Q300 92 390 -12"/>
-          <text class="lanyard-label" dy="2.2"><textPath href="#lanyard-fabric" startOffset="50%" text-anchor="middle">Bachelor of Science in Computer Science</textPath></text>
-          <text class="lanyard-label" dy="2.2"><textPath href="#lanyard-right-fabric" startOffset="50%" text-anchor="middle">Bachelor of Science in Computer Science</textPath></text>
+          <path class="lanyard-panel" id="lanyard-right-panel" d="M210 196 Q300 92 390 -12"/>
+          <g class="lanyard-diagonal" id="lanyard-stripe-lower"><path d="M-7-13L7 13M-13-13L1 13"/></g>
+          <g class="lanyard-diagonal" id="lanyard-stripe-upper"><path d="M-7-13L7 13M-13-13L1 13"/></g>
+          <g class="lanyard-print-icon" id="lanyard-icon-html"><image href="assets/skills/html.svg" x="-8" y="-8" width="16" height="16"/></g>
+          <g class="lanyard-print-icon" id="lanyard-icon-css"><image href="assets/skills/css.svg" x="-8" y="-8" width="16" height="16"/></g>
+          <g class="lanyard-print-icon" id="lanyard-icon-js"><image href="assets/skills/javascript.svg" x="-8" y="-8" width="16" height="16"/></g>
+          <g class="lanyard-print-icon" id="lanyard-icon-php"><image href="assets/skills/php.svg" x="-8" y="-8" width="16" height="16"/></g>
+          <g class="lanyard-print-icon" id="lanyard-icon-mysql"><image href="assets/skills/mysql.svg" x="-8" y="-8" width="16" height="16"/></g>
+          <text class="lanyard-label lanyard-degree" id="lanyard-degree" dy="3.5" lengthAdjust="spacingAndGlyphs"><textPath href="#lanyard-fabric" startOffset="52%" text-anchor="middle">BACHELOR OF SCIENCE IN COMPUTER SCIENCE</textPath></text>
+          <text class="lanyard-label lanyard-short-label" dy="3"><textPath href="#lanyard-right-fabric" startOffset="8%" text-anchor="middle">BSCS</textPath></text>
           <path class="lanyard-edge" id="lanyard-tail-edge" d="M205 232 Q205 250 205 264"/><path class="lanyard-fabric" id="lanyard-tail-fabric" d="M205 232 Q205 250 205 264"/><path class="lanyard-stitch" id="lanyard-tail-stitch" d="M205 232 Q205 250 205 264"/>
-          <text class="lanyard-tail-label" dy="1.4" textLength="28" lengthAdjust="spacingAndGlyphs"><textPath href="#lanyard-tail-fabric" startOffset="50%" text-anchor="middle">Bachelor of Science in Computer Science</textPath></text>
+          <text class="lanyard-tail-label" dy="2.5" textLength="24" lengthAdjust="spacingAndGlyphs"><textPath href="#lanyard-tail-fabric" startOffset="50%" text-anchor="middle">BSCS</textPath></text>
           <g class="lanyard-buckle" id="lanyard-buckle" transform="translate(205 214)"><rect x="-14" y="-18" width="28" height="8" rx="3"/><path d="M-12-11H12V-3C12 1 8 3 8 7S12 13 12 17V23H-12V17C-12 13-8 11-8 7S-12 1-12-3Z"/><rect class="buckle-button" x="-15" y="-3" width="5" height="19" rx="2"/><rect class="buckle-button" x="10" y="-3" width="5" height="19" rx="2"/><rect x="-14" y="21" width="28" height="7" rx="2"/></g>
         </svg>
         <div class="id-badge" id="id-badge" tabindex="0" role="group" aria-label="Melven Castillo profile ID badge" aria-describedby="badge-hint">

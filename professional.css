@@ -41,3 +41,16 @@ html.badge-active{overflow-x:clip}
 @media(max-width:900px){.hero h1{font-size:48px;letter-spacing:-1.8px}.hero-role{font-size:16px}}
 @media(max-width:760px){.hero h1{font-size:clamp(42px,9vw,58px);letter-spacing:-1.7px}.hero-description{font-size:16px}.hero .eyebrow{font-size:10px;letter-spacing:1.6px}}
 @media(forced-colors:active){.hero h1 .hero-name{background:none;color:CanvasText;-webkit-text-fill-color:currentColor}.hero-role{color:CanvasText}}
+
+/* Black-and-white printed fabric, adapted from the supplied lace reference. */
+.badge-lanyard .lanyard-edge{stroke:#080a0a;stroke-width:32;stroke-linecap:butt}
+.badge-lanyard .lanyard-fabric{stroke:#101313;stroke-width:28;stroke-linecap:butt}
+.badge-lanyard .lanyard-stitch{stroke:#ffffff0d;stroke-width:26;stroke-linecap:butt}
+.badge-lanyard .lanyard-panel{fill:none;stroke:#e7eeeb;stroke-width:28;stroke-linecap:butt}
+.badge-lanyard .lanyard-degree{font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:900;letter-spacing:-.15px;fill:#edf3f0}
+.badge-lanyard .lanyard-short-label{font-size:9px;font-weight:800;letter-spacing:.5px}
+.badge-lanyard .lanyard-diagonal path{stroke:#101313;stroke-width:2.5;stroke-linecap:butt}
+.lanyard-print-icon{filter:grayscale(1) contrast(1.6);pointer-events:none}
+#lanyard-icon-php,#lanyard-icon-mysql{filter:grayscale(1) brightness(.28)}
+#lanyard-stripe-lower path{stroke:#e7eeeb}
+.badge-lanyard .lanyard-tail-label{font-size:8px;font-weight:850;letter-spacing:.5px}
