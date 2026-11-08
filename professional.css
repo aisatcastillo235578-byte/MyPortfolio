@@ -30,16 +30,21 @@ html.badge-active{overflow-x:clip}
 .badge-scene.is-free{overflow:visible;contain:layout;z-index:30}
 .badge-scene.is-free .badge-hint{visibility:hidden}
 
-/* Reference-inspired introduction, using the owner's existing details. */
-.hero h1{font-size:clamp(48px,4.6vw,66px);line-height:1.12;letter-spacing:-2.4px;max-width:580px}
-.hero h1 .hero-name{color:#1763b8;background:linear-gradient(115deg,#225bb3,#007f89);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.hero-role{margin-top:20px;font-size:17px;font-weight:600;line-height:1.5;color:#006b71}
-.hero-description{font-size:17px;line-height:1.8;max-width:480px;margin-top:20px}
-.hero-context{font-size:14px;margin-top:12px;max-width:480px}
+/* One clear hierarchy: introduction, full name, role, then supporting detail. */
+.hero-copy{min-width:0}
+.hero .eyebrow{font-size:10px;font-weight:600;letter-spacing:1.8px;line-height:1.5;margin-bottom:24px}
+.hero h1{font-size:clamp(48px,4.2vw,60px);line-height:1.12;letter-spacing:-2px;max-width:none}
+.hero h1 .hero-greeting{display:block;font-size:24px;line-height:1.4;font-weight:500;letter-spacing:-.5px;color:var(--ink);margin-bottom:8px}
+.hero h1 .hero-name{display:block;white-space:nowrap;color:#1763b8;background:linear-gradient(115deg,#225bb3,#007f89);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-role{margin-top:16px;font-size:17px;font-weight:500;line-height:1.5;color:var(--ink)}
+.hero-description{font-size:17px;line-height:1.75;max-width:440px;margin-top:24px}
+.hero-context{font-size:14px;line-height:1.7;margin-top:12px;max-width:440px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.hero-actions .button{min-width:160px;min-height:48px;padding:12px 22px;font-size:14px;gap:20px;justify-content:center}
+.hero-link{margin-top:12px;font-size:13px;line-height:1.5;min-height:44px;gap:12px}
 [data-theme="dark"] .hero h1 .hero-name{background-image:linear-gradient(115deg,#7ba9ff,#61ddd5)}
-[data-theme="dark"] .hero-role{color:#70d6cf}
-@media(max-width:900px){.hero h1{font-size:48px;letter-spacing:-1.8px}.hero-role{font-size:16px}}
-@media(max-width:760px){.hero h1{font-size:clamp(42px,9vw,58px);letter-spacing:-1.7px}.hero-description{font-size:16px}.hero .eyebrow{font-size:10px;letter-spacing:1.6px}}
+@media(max-width:900px){.hero h1{font-size:42px;letter-spacing:-1.5px}.hero-role{font-size:16px}}
+@media(max-width:760px){.hero h1{font-size:clamp(32px,10vw,46px);letter-spacing:-1.4px}.hero h1 .hero-greeting{font-size:22px}.hero-description{font-size:16px}.hero-actions{width:100%}.hero-actions .button{flex:1 0 150px;min-width:0;padding-inline:16px;gap:12px}}
 @media(forced-colors:active){.hero h1 .hero-name{background:none;color:CanvasText;-webkit-text-fill-color:currentColor}.hero-role{color:CanvasText}}
 
 /* Black-and-white printed fabric, adapted from the supplied lace reference. */
