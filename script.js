@@ -36,7 +36,7 @@ document.addEventListener('keydown', event => {
     menuButton.focus();
   }
 });
-window.matchMedia('(min-width: 761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+window.matchMedia('(min-width: 901px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
 const navLinks = [...navigation.querySelectorAll('a')];
 const sections = [...document.querySelectorAll('main section[id]')];
 function updateNavigation() {
