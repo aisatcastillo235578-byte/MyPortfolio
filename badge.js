@@ -74,7 +74,6 @@
   const selectPaths = ids => ids.map(id => document.querySelector('#' + id));
   const paths = selectPaths(['lanyard-edge', 'lanyard-fabric', 'lanyard-stitch']);
   const rightPaths = selectPaths(['lanyard-right-edge', 'lanyard-right-fabric', 'lanyard-right-stitch']);
-  const loopPaths = selectPaths(['lanyard-loop-edge', 'lanyard-loop-fabric', 'lanyard-loop-stitch']);
   const tailPaths = selectPaths(['lanyard-tail-edge', 'lanyard-tail-fabric', 'lanyard-tail-stitch']);
   const buckle = document.querySelector('#lanyard-buckle');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -85,18 +84,21 @@
     const dx = model.x - model.anchor.x, dy = model.y - model.anchor.y;
     const slack = Math.max(0, model.length - Math.hypot(dx, dy));
     const bend = clamp(-model.vx * 0.025, -18, 18);
-    const shoulder = Math.min(42, model.width * 0.13);
+    // Two broad, fixed upper ends form the V shown in the reference.
+    // The ends start outside the clipped stage, so no pin or round cap is visible.
+    const inset = 20;
+    const leftAnchor = inset;
+    const rightAnchor = model.width - inset;
+    const topY = -12;
     const joinY = model.y - 74;
-    const controlY = 38 + (joinY - 38) * 0.53 + slack * 0.14;
-    const leftControlX = model.anchor.x - shoulder * 0.72 + dx * 0.28 + bend;
-    const rightControlX = model.anchor.x + shoulder * 0.72 + dx * 0.28 + bend;
-    const left = `M${model.anchor.x - shoulder} 38 Q${leftControlX} ${controlY} ${model.x - 5} ${joinY}`;
-    const right = `M${model.x + 5} ${joinY} Q${rightControlX} ${controlY} ${model.anchor.x + shoulder} 38`;
-    const loop = `M${model.anchor.x - shoulder} 38 C${model.anchor.x - shoulder} 4 ${model.anchor.x + shoulder} 4 ${model.anchor.x + shoulder} 38`;
+    const controlY = (topY + joinY) * 0.5 + slack * 0.14;
+    const leftControlX = (leftAnchor + model.x - 5) * 0.5 + bend;
+    const rightControlX = (rightAnchor + model.x + 5) * 0.5 + bend;
+    const left = `M${leftAnchor} ${topY} Q${leftControlX} ${controlY} ${model.x - 5} ${joinY}`;
+    const right = `M${model.x + 5} ${joinY} Q${rightControlX} ${controlY} ${rightAnchor} ${topY}`;
     const tail = `M${model.x} ${model.y - 34} Q${model.x + bend * 0.15} ${model.y - 15} ${model.x} ${model.y}`;
     paths.forEach(path => path.setAttribute('d', left));
     rightPaths.forEach(path => path.setAttribute('d', right));
-    loopPaths.forEach(path => path.setAttribute('d', loop));
     tailPaths.forEach(path => path.setAttribute('d', tail));
     buckle.setAttribute('transform', `translate(${model.x} ${model.y - 56})`);
   }
