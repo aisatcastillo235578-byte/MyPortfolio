@@ -1,7 +1,9 @@
 ﻿# Skill logo credits
 
-- HTML5, CSS3, JavaScript, MySQL, and Canva SVG artwork: Devicon, https://github.com/devicons/devicon (MIT license included in DEVICON-LICENSE). Original brand colors retained; displayed at a smaller size without cropping.
-- PHP elephant: Camilo Sanchez, https://commons.wikimedia.org/wiki/File:Php_elephant_logo.svg. Licensed under Creative Commons Attribution 3.0 Unported, https://creativecommons.org/licenses/by/3.0/. Artwork unchanged; displayed at a smaller size.
-- CapCut: simplified vector rendition of the logo supplied as a reference by the portfolio owner. Drawn with a transparent background; the reference checkerboard is not part of the logo.
+The portfolio owner supplied the current HTML, CSS, JavaScript, CapCut, PHP, and MySQL SVG designs in chat and an attached text file. The supplied paths, colors, and viewBox proportions are retained. Logos are displayed at a smaller size using object-fit: contain.
+
+The supplied Canva design matches the Devicon Canva icon already used here: https://github.com/devicons/devicon. Its MIT license is included in DEVICON-LICENSE. The supplied 200 by 200 dimensions have been applied.
+
+These replace the earlier alternate logos, including the previously credited Wikimedia PHP elephant. That artwork is no longer included.
 
 Product names and logos belong to their respective owners. Their display identifies the portfolio owner's tools and does not imply endorsement.
